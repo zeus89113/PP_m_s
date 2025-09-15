@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Module Reports{% endblock %}
+
+{% block content %}
+    <h1>Historical Module Reports</h1>
+    <p>Displaying recent entries for each operational module.</p>
+
+    {% for module_name, reports_list in grouped_reports.items() %}
+    <div class="module-report-container">
+        <h2>{{ module_name }}</h2>
+        <table class="records-table">
+            <thead>
+                <tr>
+                    <th>Timestamp (UTC)</th>
+                    <th>Status</th>
+                    <th>Power (MW)</th>
+                    <th>Temp (°C)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports_list %}
+                <tr>
+                    <td>{{ report.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ report.status }}</td>
+                    <td>{{ '%.2f'|format(report.power_output_mw) if report.power_output_mw is not none else 'N/A' }}</td>
+                    <td>{{ '%.2f'|format(report.temperature_c) if report.temperature_c is not none else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+
+{% endblock %}

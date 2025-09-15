@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Plant Overview{% endblock %}
+
+{% block content %}
+
+
+    {% for category, modules in categorized_modules.items() %}
+    <div class="module-category">
+        <h2>{{ category }}</h2>
+        <div class="module-grid">
+            {% for name, data in modules.items() %}
+            <div class="module-block"
+                 id="{{ name.lower().replace(' ', '_') }}"
+                 data-category="{{ category }}"
+                 data-status="{{ data.status.lower() }}">
+                <p class="module-name">{{ name }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <div id="context-menu" class="context-menu" style="display: none;">
+        </div>
+
+    <div id="module-tooltip" class="module-tooltip" style="display: none;">
+        <p><strong>Module:</strong> <span id="tooltip-module-name"></span></p>
+        <p><strong>Status:</strong> <span id="tooltip-status"></span></p>
+        <div id="tooltip-details"></div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        // Pass the full categorized data to JavaScript
+        const categorizedModuleData = {{ categorized_modules | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+{% endblock %}
