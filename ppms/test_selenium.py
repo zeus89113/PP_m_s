@@ -55,20 +55,17 @@ class SeleniumAuthTests(unittest.TestCase):
         self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
         time.sleep(5) 
 
-    # --- New, More Comprehensive Test Cases ---
 
     def test_successful_login_and_logout(self):
         """Test 1: Can a user log in and then log out successfully?"""
         print("\nRunning test: Successful Login and Logout")
         self._login('zeus', 'zeus')
-        # After login, the title should be the Plant Overview
         self.assertIn("Plant Overview", self.driver.title)
         
-        # Find and click the logout link
+
         logout_link = self.driver.find_element(By.CSS_SELECTOR, "a[href='/auth/logout']")
         logout_link.click()
         time.sleep(0.5)
-        # After logout, we should be back on the login page
         self.assertIn("Log In", self.driver.title)
 
     def test_failed_login_shows_error(self):
@@ -76,10 +73,8 @@ class SeleniumAuthTests(unittest.TestCase):
         print("Running test: Failed Login Shows Error")
         self._login('zeus', 'harris')
         
-        # We should still be on the login page
         self.assertIn("Log In", self.driver.title)
         
-        # Check for the error flash message
         error_message = self.driver.find_element(By.CLASS_NAME, "flash-error").text
         self.assertIn("Invalid username or password", error_message)
 
@@ -88,7 +83,7 @@ class SeleniumAuthTests(unittest.TestCase):
         print("Running test: Reactor Module is Present After Login")
         self._login('harris', 'harris')
         
-        # The main page is the dashboard, so we don't need to navigate
+
         reactor_block = self.driver.find_element(By.ID, "reactor_1")
         self.assertIsNotNone(reactor_block)
         
