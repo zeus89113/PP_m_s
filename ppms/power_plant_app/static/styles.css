@@ -1,23 +1,35 @@
 /* General Body & Navigation Styles (keep existing) */
+:root {
+    /* New palette */
+    --ppms-ink: #2D336B;     /* deep indigo for text/nav */
+    --ppms-accent: #7886C7;  /* accent for highlights and borders */
+    --ppms-muted: #A9B5DF;   /* light indigo for table headers, subtle borders */
+    --ppms-bg: #FFF2F2;      /* soft background */
+    --ppms-card: #FFFFFF;    /* card surface */
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: var(--ppms-bg);
     margin: 0;
-    color: #333;
+    color: var(--ppms-ink);
 }
 
 nav {
-    background-color: #2c3e50;
-    color: white;
+    background-color: var(--ppms-ink);
+    color: var(--ppms-bg);
     padding: 1rem;
     display: flex;
     align-items: center;
+    border-bottom: 3px solid var(--ppms-accent);
 }
 
 nav a {
-    color: white;
+    color: var(--ppms-bg);
     text-decoration: none;
     margin-left: 1.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
 }
 
 nav a.nav-title {
@@ -29,21 +41,31 @@ nav a.nav-title {
 
 main {
     padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Headings spacing */
+main h1 {
+    margin: 0 0 1.25rem 0;
+}
+main h2 {
+    margin: 0 0 0.75rem 0;
 }
 
 /* Dashboard Styles (keep existing) */
 .modules-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .module-card {
-    background-color: #ffffff;
+    background-color: var(--ppms-card);
     border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-left: 5px solid #bdc3c7; /* Default/Standby color */
+    padding: 1.25rem 1.25rem 1rem 1.25rem;
+    box-shadow: 0 6px 18px rgba(45,51,107,0.08);
+    border-left: 5px solid var(--ppms-muted); /* Default/Standby color */
 }
 
 .module-card.online {
@@ -56,6 +78,7 @@ main {
 
 .module-card h2 {
     margin-top: 0;
+    color: var(--ppms-ink);
 }
 
 /* Records Table Styles (keep existing) */
@@ -63,38 +86,41 @@ main {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: var(--ppms-card);
+    box-shadow: 0 6px 18px rgba(45,51,107,0.06);
+    border: 1px solid rgba(169,181,223,0.6);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .records-table th, .records-table td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(169,181,223,0.5);
 }
 
 .records-table th {
-    background-color: #34495e;
-    color: white;
+    background-color: var(--ppms-accent);
+    color: #ffffff;
 }
 
 .records-table tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: rgba(169,181,223,0.15);
 }
 
 /* --- NEW STYLES FOR INTERACTIVE NUCLEAR DASHBOARD --- */
 
 .diagram-container {
     position: relative; /* Needed for absolute positioning of tooltip/menu */
-    border: 1px solid #ccc;
-    background-color: #ffffff;
+    border: 1px solid rgba(169,181,223,0.6);
+    background-color: var(--ppms-card);
     padding: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 18px rgba(45,51,107,0.06);
 }
 
 .plant-diagram {
     display: block; /* Remove extra space below SVG */
-    border: 1px solid #eee;
+    border: 1px solid rgba(169,181,223,0.6);
 }
 
 /* Interactive module styling */
@@ -106,16 +132,16 @@ main {
 
 .plant-diagram circle:hover,
 .plant-diagram rect:hover {
-    stroke: #007bff; /* Highlight border on hover */
+    stroke: var(--ppms-accent); /* Highlight border on hover */
     stroke-width: 3;
-    filter: brightness(1.1); /* Slightly brighten the module */
+    filter: brightness(1.05); /* Slightly brighten the module */
 }
 
 /* Tooltip styles */
 .module-tooltip {
     position: absolute;
-    background-color: #333;
-    color: white;
+    background-color: var(--ppms-ink);
+    color: var(--ppms-bg);
     padding: 8px 12px;
     border-radius: 5px;
     font-size: 13px;
@@ -130,15 +156,15 @@ main {
 }
 
 .module-tooltip strong {
-    color: #ffd700; /* Gold for emphasis */
+    color: var(--ppms-accent);
 }
 
 /* Context menu styles */
 .context-menu {
     position: absolute;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    background-color: var(--ppms-card);
+    border: 1px solid rgba(169,181,223,0.6);
+    box-shadow: 0 6px 18px rgba(45,51,107,0.08);
     border-radius: 5px;
     overflow: hidden; /* Ensures menu items don't spill */
     z-index: 1001; /* Higher than tooltip */
@@ -148,9 +174,9 @@ main {
 .context-menu a.menu-item {
     display: block;
     padding: 8px 12px;
-    color: #333;
+    color: var(--ppms-ink);
     text-decoration: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(169,181,223,0.4);
 }
 
 .context-menu a.menu-item:last-child {
@@ -158,8 +184,8 @@ main {
 }
 
 .context-menu a.menu-item:hover {
-    background-color: #f0f0f0;
-    color: #007bff;
+    background-color: rgba(169,181,223,0.15);
+    color: var(--ppms-ink);
 }
 
 .context-menu .capacity-slider,
@@ -174,37 +200,37 @@ main {
 }
 
 .module-category h2 {
-    border-bottom: 2px solid #34495e;
+    border-bottom: 2px solid var(--ppms-accent);
     padding-bottom: 0.5rem;
-    color: #2c3e50;
+    color: var(--ppms-ink);
 }
 
 .module-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .module-block {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1.5rem 1rem;
+    background-color: var(--ppms-card);
+    border: 1px solid rgba(169,181,223,0.7);
+    border-radius: 10px;
+    padding: 1.25rem 1rem;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 18px rgba(45,51,107,0.06);
     cursor: pointer;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    border-bottom: 5px solid #bdc3c7; /* Default/Standby color */
+    border-bottom: 5px solid var(--ppms-accent); /* Default */
 }
 
 .module-block:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(45,51,107,0.12);
 }
 
 .module-name {
     font-weight: bold;
-    color: #34495e;
+    color: var(--ppms-ink);
     margin: 0;
 }
 
@@ -250,8 +276,23 @@ main {
 }
 
 nav a:hover {
-    color: #1abc9c;
-    text-decoration: underline;
+    color: var(--ppms-bg);
+    background-color: rgba(169,181,223,0.25);
+}
+
+/* Auth forms */
+.auth-form input, .auth-form select, .auth-form button {
+    padding: 10px 12px;
+    border: 1px solid rgba(169,181,223,0.7);
+    border-radius: 6px;
+}
+.auth-form button {
+    background-color: var(--ppms-accent);
+    color: #ffffff;
+    cursor: pointer;
+}
+.auth-form button:hover {
+    background-color: var(--ppms-ink);
 }
 
 .module-report-container {

@@ -25,7 +25,9 @@ def create_app(test_config=None):
 
     # Import and register the blueprint
     from . import dashboard
+    from . import auth
     app.register_blueprint(dashboard.bp)
+    app.register_blueprint(auth.bp)
 
     # Import models and create the database tables
     with app.app_context():
