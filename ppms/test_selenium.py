@@ -91,7 +91,7 @@ class SeleniumAuthTests(unittest.TestCase):
         self.assertEqual("Reactor 1", module_name)
 
     def test_admin_can_access_reports(self):
-        """Test 5: Can an admin successfully access the reports page?"""
+        """Test 4: Can an admin successfully access the reports page?"""
         print("Running test: Admin Can Access Reports")
         self._login('zeus', 'zeus')
         
