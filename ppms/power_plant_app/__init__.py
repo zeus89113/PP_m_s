@@ -7,6 +7,11 @@ db = SQLAlchemy()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    db_uri = f"sqlite:///{os.path.join(app.instance_path, 'plant_data.sqlite')}"
+
+    # If test_config is passed, override the database URI to use the test database
+    if test_config and 'SQLALCHEMY_DATABASE_URI' in test_config:
+        db_uri = test_config['SQLALCHEMY_DATABASE_URI']
     app.config.from_mapping(
         SECRET_KEY='dev',
         # Configure the SQLite database path

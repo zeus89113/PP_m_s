@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Schedule Maintenance{% endblock %}
+{% block content %}
+    <h1>Schedule New Maintenance</h1>
+    <form method="post" class="auth-form">
+        <label for="module_name">Select Module</label>
+        <select name="module_name" id="module_name" required>
+            {% for module in modules %}
+                <option value="{{ module }}">{{ module }}</option>
+            {% endfor %}
+        </select>
+        
+        <label for="schedule_datetime">Select Date and Time</label>
+        <input type="datetime-local" id="schedule_datetime" name="schedule_datetime" required>
+        
+        <input type="submit" value="Schedule Maintenance">
+    </form>
+{% endblock %}

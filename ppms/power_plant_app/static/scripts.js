@@ -42,6 +42,9 @@ $(document).ready(function() {
         const contextMenu = $('#context-menu');
 
         contextMenu.html(''); // Clear previous menu items
+        if (currentModuleCategory === "Safety Module" && currentUserRole !== 'safety' && currentUserRole !== 'admin') {
+        return; 
+        }
 
         // Build the menu based on the module's category
         if (currentModuleCategory === "Operation Module") {

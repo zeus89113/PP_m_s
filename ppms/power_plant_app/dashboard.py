@@ -1,10 +1,13 @@
 import copy
 import csv
 from io import StringIO
-from flask import Blueprint, jsonify, render_template, request, g, make_response
+from flask import Blueprint, jsonify, render_template, request, g, make_response, redirect, url_for, flash
 from .simulation import PowerPlantSimulator
 from .models import PlantReport
 from .auth import login_required, role_required
+from .models import User, MaintenanceSchedule, Notification
+from . import db 
+from datetime import datetime
 
 bp = Blueprint('dashboard', __name__)
 
@@ -73,7 +76,7 @@ def reports():
 @bp.route('/reports/export.csv')
 @login_required
 def export_reports_csv():
-    # Export the latest 1000 rows (or fewer) as CSV
+    # Export the latest 1000 rows as CSV
     rows = PlantReport.query.order_by(PlantReport.timestamp.desc()).limit(1000).all()
     output = StringIO()
     writer = csv.writer(output)
@@ -91,3 +94,60 @@ def export_reports_csv():
     response.headers['Content-Disposition'] = 'attachment; filename=plant_reports.csv'
     response.headers['Content-Type'] = 'text/csv'
     return response
+
+@bp.route('/notifications')
+@login_required
+def notifications():
+    # Mark all notifications as read when the user visits this page
+    all_notifs = Notification.query.order_by(Notification.timestamp.desc()).all()
+    for notif in all_notifs:
+        if g.user not in notif.read_by_users:
+            notif.read_by_users.append(g.user)
+    db.session.commit()
+    
+    return render_template('notifications.html', notifications=all_notifs)
+
+@bp.app_context_processor
+def inject_notifications():
+    if g.user:
+        unread_count = db.session.query(Notification).filter(~Notification.read_by_users.any(id=g.user.id)).count()
+        return {'unread_notification_count': unread_count}
+    return {'unread_notification_count': 0}
+
+@bp.route('/schedule_maintenance', methods=['GET', 'POST'])
+@login_required
+@role_required('safety')
+def schedule_maintenance():
+    if request.method == 'POST':
+        module_name = request.form.get('module_name')
+        schedule_str = request.form.get('schedule_datetime')
+        
+        try:
+            schedule_dt = datetime.strptime(schedule_str, '%Y-%m-%dT%H:%M')
+            
+            # 1. Create the maintenance schedule entry
+            new_schedule = MaintenanceSchedule(
+                module_name=module_name,
+                scheduled_for_datetime=schedule_dt,
+                scheduled_by_username=g.user.username
+            )
+            db.session.add(new_schedule)
+            
+            # 2. Create a notification for everyone
+            notif_message = f"Maintenance for '{module_name}' scheduled for {schedule_dt.strftime('%Y-%m-%d %H:%M')} by {g.user.username}."
+            new_notification = Notification(message=notif_message)
+            db.session.add(new_notification)
+            
+            db.session.commit()
+            flash('Maintenance scheduled successfully and notification sent.', 'success')
+            return redirect(url_for('dashboard.nuclear_dashboard'))
+            
+        except ValueError:
+            flash('Invalid date/time format.', 'error')
+
+    # For the GET request, get a list of all module names for the dropdown
+    all_modules = []
+    for category in simulator.state.values():
+        all_modules.extend(category.keys())
+        
+    return render_template('schedule_maintenance.html', modules=sorted(all_modules))

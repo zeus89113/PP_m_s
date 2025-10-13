@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}User Management{% endblock %}
+{% block content %}
+    <div class="user-management-container">
+<div class="form-section">
+            <h2>Create New User</h2>
+            <form method="post" class="auth-form">
+                <label for="username">Username</label>
+                <input name="username" id="username" required>
+                
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+                
+                <label for="role">Role</label>
+                <select name="role" id="role">
+                    <option value="operator">Operator</option>
+                    <option value="safety">Safety</option>
+                    <option value="environment">Environment</option>
+                    <option value="admin">Admin</option>
+                </select>
+                
+                <input type="submit" value="Create User">
+            </form>
+        </div>
+        <div class="user-list-section">
+            <h2>Existing Users</h2>
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

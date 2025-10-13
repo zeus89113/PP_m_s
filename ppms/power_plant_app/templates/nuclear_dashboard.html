@@ -36,6 +36,7 @@
     <script>
         // Pass the full categorized data to JavaScript
         const categorizedModuleData = {{ categorized_modules | tojson }};
+        const currentUserRole = '{{ g.user.role }}';
     </script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 {% endblock %}

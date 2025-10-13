@@ -4,6 +4,7 @@ from . import db
 from .models import User
 from functools import wraps
 
+
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -44,9 +45,12 @@ def role_required(*roles):
     return decorator
 
 
-@bp.route('/register', methods=['GET', 'POST'])
-def register():
+@bp.route('/manage_users', methods=['GET', 'POST'])
+@login_required
+@role_required('admin')
+def manage_users():
     if request.method == 'POST':
+        # --- This is the complete logic from your original register function ---
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
         role = request.form.get('role', 'operator').strip().lower()
@@ -65,11 +69,14 @@ def register():
             )
             db.session.add(user)
             db.session.commit()
-            flash('Registration successful. Please log in.', 'success')
-            return redirect(url_for('auth.login'))
-
-    return render_template('register.html')
-
+            flash(f'User "{username}" created successfully.', 'success')
+            # Redirect back to the same page to show the new user in the list
+            return redirect(url_for('auth.manage_users'))
+        # --- End of copied logic ---
+            
+    # Fetch all existing users to display them on the page
+    all_users = User.query.all()
+    return render_template('manage_users.html', users=all_users)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
