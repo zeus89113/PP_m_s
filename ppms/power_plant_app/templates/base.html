@@ -14,6 +14,11 @@
     {% if is_authenticated %}
         <a href="{{ url_for('dashboard.reports') }}">Reports</a>
         
+        {% if current_user.role in ['admin', 'safety'] %}
+            <a href="{{ url_for('dashboard.export_reports_csv') }}">Export Reports</a>
+        {% endif %}
+        
+        
         {% if current_user.role == 'admin' %}
              <a href="{{ url_for('auth.manage_users') }}">Manage Users</a>
         {% endif %}

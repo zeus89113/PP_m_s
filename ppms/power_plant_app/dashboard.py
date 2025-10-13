@@ -1,13 +1,14 @@
 import copy
 import csv
 from io import StringIO
-from flask import Blueprint, jsonify, render_template, request, g, make_response, redirect, url_for, flash
+from flask import Blueprint, jsonify, render_template, request, g, make_response, redirect, url_for, flash, Response
 from .simulation import PowerPlantSimulator
 from .models import PlantReport
 from .auth import login_required, role_required
 from .models import User, MaintenanceSchedule, Notification
 from . import db 
 from datetime import datetime
+
 
 bp = Blueprint('dashboard', __name__)
 
@@ -76,24 +77,30 @@ def reports():
 @bp.route('/reports/export.csv')
 @login_required
 def export_reports_csv():
-    # Export the latest 1000 rows as CSV
-    rows = PlantReport.query.order_by(PlantReport.timestamp.desc()).limit(1000).all()
-    output = StringIO()
-    writer = csv.writer(output)
-    writer.writerow(['timestamp_utc', 'module_name', 'status', 'power_output_mw', 'temperature_c'])
-    for r in rows:
-        writer.writerow([
-            r.timestamp.strftime('%Y-%m-%d %H:%M:%S') if r.timestamp else '',
-            r.module_name,
-            r.status,
-            f"{r.power_output_mw:.2f}" if r.power_output_mw is not None else '',
-            f"{r.temperature_c:.2f}" if r.temperature_c is not None else '',
+    reports = PlantReport.query.filter(
+        PlantReport.module_name.like('%Reactor%')
+    ).order_by(PlantReport.timestamp.asc()).all()
+
+    si = StringIO()
+    cw = csv.writer(si)
+
+    cw.writerow(['Timestamp (UTC)', 'Module Name', 'Status', 'Power (MW)', 'Temp (°C)'])
+
+    for report in reports:
+        cw.writerow([
+            report.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            report.module_name,
+            report.status,
+            report.power_output_mw,
+            report.temperature_c
         ])
-    csv_data = output.getvalue()
-    response = make_response(csv_data)
-    response.headers['Content-Disposition'] = 'attachment; filename=plant_reports.csv'
-    response.headers['Content-Type'] = 'text/csv'
-    return response
+
+    output = si.getvalue()
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-disposition":
+                 "attachment; filename=reactor_reports.csv"})
 
 @bp.route('/notifications')
 @login_required

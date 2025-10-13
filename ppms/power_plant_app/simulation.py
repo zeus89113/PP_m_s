@@ -96,7 +96,6 @@ class PowerPlantSimulator:
         db.session.commit()
 
     def handle_action(self, module_id, action):
-        """Receives an action from the user and changes the module's target state."""
         for category, modules in self.state.items():
             for name, data in modules.items():
                 if name.lower().replace(' ', '_') == module_id:

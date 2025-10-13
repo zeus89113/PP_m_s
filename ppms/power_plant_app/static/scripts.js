@@ -138,8 +138,8 @@ function fetchAndUpdateData() {
         });
     }
 
-    // --- NEW: Start the 10-second update interval ---
-    setInterval(fetchAndUpdateData, 5000);
+    // --- 10-second update interval ---
+    setInterval(fetchAndUpdateData, 1000);
 
 });
 
