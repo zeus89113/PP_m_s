@@ -21,6 +21,37 @@ def inject_user():
         'is_authenticated': g.user is not None
     }
 
+@bp.route('/register', methods=['GET', 'POST'])
+def register():
+    # This block runs when the user submits the form
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        # Default role for public registration should be 'operator'
+        role = request.form.get('role', 'operator').strip().lower()
+
+        # --- Validation Logic ---
+        if not username or not password:
+            flash('Username and password are required.', 'error')
+        elif User.query.filter_by(username=username).first():
+            flash('Username already exists.', 'error')
+        elif role not in ['admin', 'operator', 'safety', 'environment']:
+            flash('Invalid role selected.', 'error')
+        else:
+            # --- User Creation Logic ---
+            user = User(
+                username=username,
+                password_hash=generate_password_hash(password),
+                role=role
+            )
+            db.session.add(user)
+            db.session.commit()
+            flash('Registration successful. Please log in.', 'success')
+            return redirect(url_for('auth.login'))
+
+    # This line runs for a GET request (when a user just visits the page)
+    # or if the POST validation fails.
+    return render_template('register.html')
 
 def login_required(view_func):
     @wraps(view_func)
